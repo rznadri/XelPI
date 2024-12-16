@@ -1,0 +1,40 @@
+name: CDK Diff
+
+on: 
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+  workflow_run:
+    workflows: ["CDK Diff and Deploy"]
+    types:
+      - completed
+
+jobs:
+  cdk_diff:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - name: Setup node.js environment
+        uses: actions/setup-node@v2
+        with:
+          node-version: 20
+          cache: "npm"
+      - name: Install root dependencies
+        run: npm ci
+      - name: Install AWS CDK
+        run: npm i -g aws-cdk
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@master
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - name: Bootstrap environment
+        run: cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/${{ secrets.AWS_REGION }}
+      - name: Run CDK Diff
+        run: cdk diff
