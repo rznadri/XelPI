@@ -1,0 +1,12 @@
+{
+    "entryFile": "lambda/app.ts",
+    "controllerPathGlobs": ["lambda/controllers/**/*.ts"],
+    "routes": {
+      "routesDir": "lambda/routes/"
+    },
+    "spec": {
+      "outputDirectory": "lambda/swagger",
+      "rootSecurity": []
+    }
+  }
+  
