@@ -1,4 +1,4 @@
-import * as express from "express"
+import express from "express"
 import { RegisterRoutes } from "./routes/routes"; // This is the generated routes file
 
 const app = express();
